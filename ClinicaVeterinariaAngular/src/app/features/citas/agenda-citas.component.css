@@ -1,0 +1,23 @@
+.eyebrow { color: #197c70; font-size: .75rem; letter-spacing: .12em; font-weight: 800; }
+.slot-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
+.slot { border: 1px solid #cfe0e6; border-radius: .7rem; padding: .55rem .35rem; background: #f5fbf9; color: #17675e; font-weight: 700; }
+.slot small { display: block; font-size: .68rem; font-weight: 500; }
+.slot:disabled { border-color: #e1e5e9; background: #f1f3f5; color: #98a4ad; cursor: not-allowed; }
+.slot.slot-selected { border-color: #197c70; background: #197c70; color: #fff; box-shadow: 0 0 0 2px rgba(25,124,112,.14); }
+.slot-grid-large { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.slot-preview { display: flex; flex-direction: column; gap: .2rem; padding: .75rem; border-radius: .75rem; border: 1px solid #d3e8e2; background: #f1faf7; color: #17675e; }
+.slot-preview span { font-size: .75rem; }
+.slot-preview-busy { background: #f5f6f7; color: #7d8992; border-color: #e1e5e9; }
+.legend { display: flex; align-items: center; font-size: .75rem; color: #647889; white-space: nowrap; }
+.legend i { width: 9px; height: 9px; display: inline-block; border-radius: 50%; margin-right: .3rem; }
+.legend-free { background: #197c70; }.legend-busy { background: #aab4bc; }
+.count-pill { border-radius: 999px; background: #e8f2f5; color: #31566b; padding: .3rem .65rem; font-size: .8rem; font-weight: 700; }
+.appointment-list { display: grid; gap: .7rem; }
+.appointment-card { display: flex; align-items: center; gap: .8rem; border: 1px solid #e2e9ee; border-radius: .8rem; padding: .8rem; background: #fff; }
+.appointment-date { width: 48px; height: 52px; flex: 0 0 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #e8f5f1; border-radius: .65rem; color: #17675e; }
+.appointment-date strong { font-size: 1.2rem; line-height: 1; }.appointment-date span { font-size: .7rem; text-transform: uppercase; }
+.appointment-main { flex: 1; min-width: 0; }.status-chip { border-radius: 999px; padding: .2rem .5rem; font-size: .7rem; font-weight: 700; }
+.status-programada { background: #e2efff; color: #24558a; }.status-atendida { background: #dff5e8; color: #17663d; }.status-cancelada { background: #fce8e8; color: #9d2e2e; }
+:host ::ng-deep .cita-proxima { border-color: #e6b65c !important; background: #fffaf0 !important; box-shadow: 0 0 0 2px rgba(230,182,92,.14); }
+.appointment-card.cancelled { opacity: .7; }
+@media (max-width: 575px) { .slot-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }.appointment-card { align-items: flex-start; flex-wrap: wrap; }.appointment-main { min-width: calc(100% - 64px); }.legend { font-size: .68rem; } }

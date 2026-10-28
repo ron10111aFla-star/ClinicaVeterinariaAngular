@@ -1,0 +1,42 @@
+<section class="page-heading"><span class="eyebrow">MÓDULO 02</span><h1>Agenda de citas</h1><p>Consulta los horarios libres y registra una cita vinculada a una mascota.</p></section>
+@if (mensaje) { <div class="alert" [class.alert-success]="tipoMensaje === 'success'" [class.alert-danger]="tipoMensaje === 'danger'" [class.alert-info]="tipoMensaje === 'info'" role="status">{{ mensaje }}</div> }
+
+<div class="row g-4 align-items-start">
+  <div class="col-lg-5">
+    <section class="panel p-3 p-md-4">
+      <h2 class="panel-title">Nueva cita</h2>
+      @if (mascotas.length === 0) {
+        <div class="empty-state">Primero registra al propietario y a su mascota en la sección <strong>Registro</strong>. Luego podrás agendar una cita.</div>
+      } @else {
+        <form [formGroup]="formulario" (ngSubmit)="agendar()" novalidate>
+          <div class="mb-3"><label for="fechaCita" class="form-label">Fecha <span class="required-mark">*</span></label><input id="fechaCita" type="date" class="form-control" formControlName="fecha" [min]="hoy"><div class="form-text">Selecciona una fecha para revisar los espacios disponibles.</div></div>
+          <div class="mb-3"><cv-selector-mascota [mascotas]="mascotas" [selectedId]="formulario.controls.mascotaId.value" [idControl]="'mascotaCita'" (selectedIdChange)="formulario.controls.mascotaId.setValue($event)" /></div>
+          <div class="mb-3"><label class="form-label d-block">Horario disponible <span class="required-mark">*</span></label><div class="slot-grid">@for (hora of horarios; track hora) { <button type="button" class="slot" [class.slot-selected]="formulario.controls.hora.value === hora" [class.slot-busy]="!estaDisponible(hora)" [disabled]="!estaDisponible(hora)" (click)="seleccionarHora(hora)" [attr.aria-pressed]="formulario.controls.hora.value === hora">{{ hora }}<small>{{ estaDisponible(hora) ? 'Libre' : 'Ocupado' }}</small></button> }</div><div class="form-text mt-2">Los horarios ocupados y los horarios pasados no se pueden seleccionar.</div></div>
+          <div class="mb-3"><label for="motivo" class="form-label">Motivo de consulta <span class="required-mark">*</span></label><textarea id="motivo" class="form-control" rows="3" maxlength="250" formControlName="motivo" placeholder="Ej. Control general, vacunación o malestar"></textarea><div class="form-text">Mínimo 5 caracteres y máximo 250.</div></div>
+          <button type="submit" class="btn btn-primary w-100">Confirmar cita</button>
+        </form>
+      }
+    </section>
+  </div>
+
+  <div class="col-lg-7">
+    <section class="panel p-3 p-md-4 mb-4">
+      <div class="d-flex justify-content-between align-items-start gap-2 mb-3"><div><h2 class="panel-title mb-1">Disponibilidad del día</h2><p class="muted small mb-0">{{ fechaSeleccionada | date:'fullDate':'':'es-PE' }}</p></div><span class="legend"><i class="legend-free"></i> Libre <i class="legend-busy ms-2"></i> Ocupado</span></div>
+      <div class="slot-grid slot-grid-large">@for (hora of horarios; track hora) { <div class="slot-preview" [class.slot-preview-busy]="!estaDisponible(hora)"><strong>{{ hora }}</strong><span>{{ estaDisponible(hora) ? 'Disponible' : 'No disponible' }}</span></div> }</div>
+    </section>
+    <section class="panel p-3 p-md-4">
+      <div class="d-flex align-items-center justify-content-between gap-2 mb-3"><h2 class="panel-title mb-0">Citas registradas</h2><span class="count-pill">{{ citas.length }}</span></div>
+      @if (citas.length === 0) { <div class="empty-state">Aún no hay citas registradas. Cuando agendes una, aparecerá en esta lista.</div> }
+      @else {
+        <div class="appointment-list">@for (cita of citas; track cita.id) {
+          <article class="appointment-card" [citaProxima]="estaMarcadaComoProxima(cita)" [class.cancelled]="cita.estado === 'Cancelada'">
+            <div class="appointment-date"><strong>{{ cita.fecha | date:'dd':'':'es-PE' }}</strong><span>{{ cita.fecha | date:'MMM':'':'es-PE' }}</span></div>
+            <div class="appointment-main"><div class="d-flex flex-wrap align-items-center gap-2"><strong>{{ nombreMascota(cita.mascotaId) }}</strong><span class="status-chip" [class.status-programada]="cita.estado === 'Programada'" [class.status-atendida]="cita.estado === 'Atendida'" [class.status-cancelada]="cita.estado === 'Cancelada'">{{ cita.estado | estadoCita }}</span></div><div class="muted small mt-1">{{ cita.hora }} · {{ cita.motivo }}</div><div class="muted small">{{ cita.fecha | date:'EEEE, d MMMM y':'':'es-PE' }}</div></div>
+            @if (cita.estado === 'Programada') { <div class="d-flex flex-wrap gap-1"><button type="button" class="btn btn-sm btn-outline-success" (click)="cambiarEstado(cita, 'Atendida')">Atendida</button><button type="button" class="btn btn-sm btn-outline-danger" (click)="cambiarEstado(cita, 'Cancelada')">Cancelar</button></div> }
+          </article>
+        }</div>
+      }
+      <p class="small muted mt-3 mb-0">Las citas próximas dentro de 48 horas se resaltan automáticamente.</p>
+    </section>
+  </div>
+</div>

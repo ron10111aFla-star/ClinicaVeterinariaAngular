@@ -1,0 +1,39 @@
+<section class="page-heading">
+  <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
+    <div><span class="eyebrow">MÓDULO 01</span><h1>Registro de propietario y mascota</h1><p>Registra los datos de contacto del dueño y crea la ficha de su mascota.</p></div>
+    <span class="step-pill">🐾 Ficha nueva</span>
+  </div>
+</section>
+
+@if (mensaje) {
+  <div class="alert" [class.alert-success]="tipoMensaje === 'success'" [class.alert-danger]="tipoMensaje === 'danger'" role="status">{{ mensaje }}</div>
+}
+
+<form [formGroup]="formulario" (ngSubmit)="guardar()" novalidate>
+  <section class="panel p-3 p-md-4 mb-4" formGroupName="propietario">
+    <div class="section-heading"><span class="section-number">1</span><div><h2 class="panel-title mb-1">Datos del propietario</h2><p class="muted small mb-0">Información para identificar y contactar al responsable.</p></div></div>
+    <div class="row g-3 mt-1">
+      <div class="col-sm-4 col-lg-3"><label class="form-label" for="tipoDocumento">Tipo de documento</label><select id="tipoDocumento" class="form-select" formControlName="tipoDocumento"><option value="DNI">DNI</option><option value="CE">Carné de extranjería</option><option value="Pasaporte">Pasaporte</option><option value="Otro">Otro</option></select></div>
+      <div class="col-sm-8 col-lg-3"><label class="form-label" for="numeroDocumento">N.º de documento</label><input id="numeroDocumento" class="form-control" formControlName="numeroDocumento" maxlength="20" placeholder="Opcional"><div class="form-text">Campo opcional en esta versión.</div></div>
+      <div class="col-lg-3"><label class="form-label" for="nombres">Nombres <span class="required-mark">*</span></label><input id="nombres" class="form-control" formControlName="nombres" autocomplete="given-name" placeholder="Ej. María" [class.is-invalid]="tieneError('propietario','nombres')"><div class="invalid-feedback">Ingresa al menos 2 caracteres.</div></div>
+      <div class="col-lg-3"><label class="form-label" for="apellidos">Apellidos <span class="required-mark">*</span></label><input id="apellidos" class="form-control" formControlName="apellidos" autocomplete="family-name" placeholder="Ej. García López" [class.is-invalid]="tieneError('propietario','apellidos')"><div class="invalid-feedback">Ingresa los apellidos.</div></div>
+      <div class="col-md-6"><label class="form-label" for="telefono">Teléfono <span class="required-mark">*</span></label><input id="telefono" class="form-control" formControlName="telefono" autocomplete="tel" placeholder="Ej. 987654321" [class.is-invalid]="tieneError('propietario','telefono')"><div class="invalid-feedback">Ingresa un teléfono válido (7 a 15 caracteres numéricos).</div></div>
+      <div class="col-md-6"><label class="form-label" for="correo">Correo electrónico</label><input id="correo" type="email" class="form-control" formControlName="correo" autocomplete="email" placeholder="nombre@correo.com" [class.is-invalid]="tieneError('propietario','correo')"><div class="invalid-feedback">Revisa el formato del correo.</div></div>
+    </div>
+  </section>
+
+  <section class="panel p-3 p-md-4 mb-4" formGroupName="mascota">
+    <div class="section-heading"><span class="section-number">2</span><div><h2 class="panel-title mb-1">Datos de la mascota</h2><p class="muted small mb-0">Estos datos formarán su ficha para futuras citas e historiales.</p></div></div>
+    <div class="row g-3 mt-1">
+      <div class="col-md-6 col-lg-4"><label class="form-label" for="nombreMascota">Nombre de la mascota <span class="required-mark">*</span></label><input id="nombreMascota" class="form-control" formControlName="nombre" placeholder="Ej. Luna" [class.is-invalid]="tieneError('mascota','nombre')"><div class="invalid-feedback">El nombre es obligatorio (mínimo 2 caracteres).</div></div>
+      <div class="col-md-6 col-lg-4"><label class="form-label" for="especie">Especie <span class="required-mark">*</span></label><select id="especie" class="form-select" formControlName="especie"><option value="Perro">Perro</option><option value="Gato">Gato</option><option value="Ave">Ave</option><option value="Conejo">Conejo</option><option value="Otro">Otro</option></select></div>
+      <div class="col-md-6 col-lg-4"><label class="form-label" for="raza">Raza</label><input id="raza" class="form-control" formControlName="raza" placeholder="Ej. Mestizo"><div class="form-text">Opcional.</div></div>
+      <div class="col-md-6 col-lg-4"><label class="form-label" for="fechaNacimiento">Fecha de nacimiento</label><input id="fechaNacimiento" type="date" class="form-control" formControlName="fechaNacimiento" [max]="hoy"><div class="form-text">Si no se conoce, puedes dejarla vacía.</div></div>
+      <div class="col-md-6 col-lg-4"><label class="form-label" for="sexo">Sexo</label><select id="sexo" class="form-select" formControlName="sexo"><option value="No especificado">No especificado</option><option value="Macho">Macho</option><option value="Hembra">Hembra</option></select></div>
+      <div class="col-12"><label class="form-label" for="observaciones">Observaciones relevantes</label><textarea id="observaciones" class="form-control" rows="3" maxlength="500" formControlName="observaciones" placeholder="Alergias conocidas, características u otra información relevante"></textarea><div class="form-text">Máximo 500 caracteres.</div></div>
+    </div>
+  </section>
+
+  <div class="d-flex flex-wrap justify-content-end gap-2"><button type="button" class="btn btn-outline-secondary px-4" (click)="limpiar()">Limpiar formulario</button><button type="submit" class="btn btn-primary px-4">Guardar propietario y mascota</button></div>
+  <p class="small muted mt-3 mb-0"><span class="required-mark">*</span> Campos obligatorios. El registro se guarda en el almacenamiento local de este navegador.</p>
+</form>

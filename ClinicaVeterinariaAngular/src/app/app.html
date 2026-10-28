@@ -1,0 +1,19 @@
+<header class="topbar">
+  <div class="container d-flex flex-wrap align-items-center justify-content-between gap-3 py-3">
+    <a class="brand text-decoration-none" routerLink="/registro">
+      <span class="brand-icon">🐾</span>
+      <span><strong>VetCare</strong><small>Gestión de clínica veterinaria</small></span>
+    </a>
+    <nav class="nav nav-pills" aria-label="Navegación principal">
+      <a class="nav-link" routerLink="/registro" routerLinkActive="active" ariaCurrentWhenActive="page">Registro</a>
+      <a class="nav-link" routerLink="/citas" routerLinkActive="active" ariaCurrentWhenActive="page">Agenda de citas</a>
+      <a class="nav-link" routerLink="/historial" routerLinkActive="active" ariaCurrentWhenActive="page">Historial</a>
+    </nav>
+  </div>
+</header>
+<main class="container py-4 py-lg-5">
+  <router-outlet />
+</main>
+<footer class="footer text-center py-4">
+  <div class="container">Proyecto académico · Desarrollo de Interfaces 3 · Angular y TypeScript</div>
+</footer>

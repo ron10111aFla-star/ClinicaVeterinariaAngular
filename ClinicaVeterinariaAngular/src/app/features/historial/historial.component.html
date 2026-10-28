@@ -1,0 +1,68 @@
+<section class="page-heading"><span class="eyebrow">MÓDULO 03</span><h1>Historial de atención</h1><p>Busca una mascota por nombre o código, revisa sus datos y consulta sus atenciones en orden cronológico.</p></section>
+@if (mensaje) { <div class="alert" [class.alert-success]="tipoMensaje === 'success'" [class.alert-danger]="tipoMensaje === 'danger'" role="status">{{ mensaje }}</div> }
+
+<div class="row g-4 align-items-start">
+  <div class="col-lg-4">
+    <section class="panel p-3 p-md-4">
+      <h2 class="panel-title">Buscar mascota</h2>
+      <label for="buscarMascota" class="form-label">Nombre, código o propietario</label>
+      <input id="buscarMascota" class="form-control mb-3" [value]="termino" (input)="termino = $any($event.target).value" placeholder="Ej. Luna, MAS-... o María" aria-describedby="ayudaBusqueda">
+      <p id="ayudaBusqueda" class="form-text mb-3">Puedes buscar por nombre de mascota, código, especie, raza o nombre del dueño.</p>
+      @if (mascotas.length === 0) {
+        <div class="empty-state">Todavía no hay mascotas registradas. Ve a <strong>Registro</strong> para crear la primera ficha.</div>
+      } @else if (mascotasFiltradas.length === 0) {
+        <div class="empty-state">No se encontraron coincidencias. Prueba con otro nombre o código.</div>
+      } @else {
+        <div class="pet-list">@for (mascota of mascotasFiltradas; track mascota.id) {
+          <button type="button" class="pet-result" [class.pet-result-active]="mascotaSeleccionada?.id === mascota.id" (click)="seleccionarMascota(mascota)">
+            <span class="pet-avatar">{{ mascota.especie === 'Gato' ? '🐱' : mascota.especie === 'Perro' ? '🐶' : '🐾' }}</span>
+            <span class="pet-result-text"><strong>{{ mascota.nombre }}</strong><small>{{ mascota.especie }} · {{ mascota.raza || 'Raza no indicada' }}</small><small class="pet-code">{{ mascota.id }}</small></span>
+            <span aria-hidden="true">›</span>
+          </button>
+        }</div>
+      }
+    </section>
+  </div>
+
+  <div class="col-lg-8">
+    @if (!mascotaSeleccionada) {
+      <section class="panel p-4 p-md-5"><div class="history-placeholder"><span>📋</span><h2>Ficha e historial de la mascota</h2><p>Selecciona una mascota en los resultados para revisar los datos del propietario y las atenciones registradas.</p></div></section>
+    } @else {
+      <section class="panel p-3 p-md-4 mb-4">
+        <div class="d-flex flex-wrap align-items-start justify-content-between gap-3"><div><span class="eyebrow">FICHA DE MASCOTA</span><h2 class="profile-name mb-1">{{ mascotaSeleccionada.nombre }}</h2><p class="muted mb-0">{{ mascotaSeleccionada.especie }} · {{ mascotaSeleccionada.raza || 'Raza no indicada' }} · {{ mascotaSeleccionada.sexo }}</p></div><span class="code-pill">{{ mascotaSeleccionada.id }}</span></div>
+        <div class="profile-grid mt-4">
+          <div><small>Propietario</small><strong>{{ obtenerPropietario(mascotaSeleccionada.propietarioId)?.nombres }} {{ obtenerPropietario(mascotaSeleccionada.propietarioId)?.apellidos }}</strong></div>
+          <div><small>Teléfono</small><strong>{{ obtenerPropietario(mascotaSeleccionada.propietarioId)?.telefono || 'No registrado' }}</strong></div>
+          <div><small>Correo</small><strong>{{ obtenerPropietario(mascotaSeleccionada.propietarioId)?.correo || 'No registrado' }}</strong></div>
+          <div><small>Fecha de nacimiento</small><strong>{{ mascotaSeleccionada.fechaNacimiento ? (mascotaSeleccionada.fechaNacimiento | date:'dd/MM/yyyy':'':'es-PE') : 'No indicada' }}</strong></div>
+          <div class="profile-notes"><small>Observaciones relevantes</small><strong>{{ mascotaSeleccionada.observaciones || 'Sin observaciones registradas.' }}</strong></div>
+        </div>
+      </section>
+
+      <section class="panel p-3 p-md-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3"><div><h2 class="panel-title mb-1">Atenciones registradas</h2><p class="muted small mb-0">{{ atenciones.length }} registro(s), del más reciente al más antiguo.</p></div><button type="button" class="btn btn-primary btn-sm" (click)="mostrarFormularioAtencion = !mostrarFormularioAtencion">{{ mostrarFormularioAtencion ? 'Cerrar formulario' : '+ Registrar atención' }}</button></div>
+        @if (mostrarFormularioAtencion) {
+          <form class="attention-form mb-4" [formGroup]="formularioAtencion" (ngSubmit)="guardarAtencion()" novalidate>
+            <h3 class="panel-title">Nueva atención veterinaria</h3>
+            <div class="row g-3">
+              <div class="col-md-5"><label for="fechaAtencion" class="form-label">Fecha <span class="required-mark">*</span></label><input id="fechaAtencion" type="date" class="form-control" [max]="hoy" formControlName="fecha"></div>
+              <div class="col-md-7"><label for="motivoAtencion" class="form-label">Motivo de consulta <span class="required-mark">*</span></label><input id="motivoAtencion" class="form-control" formControlName="motivo" placeholder="Ej. Control general"></div>
+              <div class="col-12"><label for="diagnostico" class="form-label">Diagnóstico <span class="required-mark">*</span></label><textarea id="diagnostico" class="form-control" rows="2" formControlName="diagnostico" placeholder="Diagnóstico registrado por el personal veterinario"></textarea></div>
+              <div class="col-12"><label for="tratamiento" class="form-label">Tratamiento</label><textarea id="tratamiento" class="form-control" rows="2" formControlName="tratamiento" placeholder="Tratamiento indicado, si corresponde"></textarea></div>
+              <div class="col-12"><label for="observacionesAtencion" class="form-label">Observaciones</label><textarea id="observacionesAtencion" class="form-control" rows="2" formControlName="observaciones" placeholder="Observaciones adicionales"></textarea></div>
+            </div>
+            <div class="d-flex justify-content-end mt-3"><button type="submit" class="btn btn-primary">Guardar atención</button></div>
+            <p class="small muted mb-0 mt-2">Esta versión es un prototipo académico local; no sustituye un sistema clínico con control de acceso.</p>
+          </form>
+        }
+        @if (atenciones.length === 0) {
+          <div class="empty-state"><strong>Aún no hay atenciones registradas para esta mascota.</strong><p class="mb-0 mt-1">Cuando el personal registre una atención, aquí aparecerán la fecha, el motivo, el diagnóstico, el tratamiento y las observaciones.</p></div>
+        } @else {
+          <div class="timeline">@for (atencion of atenciones; track atencion.id) {
+            <article class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">{{ atencion.fecha | date:'dd MMMM y':'':'es-PE' }}</div><h3>{{ atencion.motivo }}</h3><div class="detail-block"><strong>Diagnóstico</strong><p>{{ atencion.diagnostico }}</p></div>@if (atencion.tratamiento) { <div class="detail-block"><strong>Tratamiento</strong><p>{{ atencion.tratamiento }}</p></div> }@if (atencion.observaciones) { <div class="detail-block"><strong>Observaciones</strong><p>{{ atencion.observaciones }}</p></div> }</article>
+          }</div>
+        }
+      </section>
+    }
+  </div>
+</div>
