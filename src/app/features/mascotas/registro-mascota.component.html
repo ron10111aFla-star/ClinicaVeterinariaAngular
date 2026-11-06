@@ -1,0 +1,49 @@
+<section class="page-heading">
+  <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
+    <div><span class="eyebrow">MÓDULO 01</span><h1>Registro de propietario y mascota</h1><p>Registra los datos de contacto del dueño y crea la ficha de su mascota.</p></div>
+    <span class="step-pill">🐾 Ficha nueva</span>
+  </div>
+</section>
+
+@if (mensaje) {
+  <div class="alert" [class.alert-success]="tipoMensaje === 'success'" [class.alert-danger]="tipoMensaje === 'danger'" role="status">{{ mensaje }}</div>
+}
+
+<form [formGroup]="formulario" (ngSubmit)="guardar()" novalidate>
+  <section class="panel p-3 p-md-4 mb-4" formGroupName="propietario">
+    <div class="section-heading"><span class="section-number">1</span><div><h2 class="panel-title mb-1">Datos del propietario</h2><p class="muted small mb-0">Información para identificar y contactar al responsable.</p></div></div>
+    <div class="row g-3 mt-1">
+      <div class="col-sm-4 col-lg-3"><label class="form-label" for="tipoDocumento">Tipo de documento</label><select id="tipoDocumento" class="form-select" formControlName="tipoDocumento"><option value="DNI">DNI</option><option value="CE">Carné de extranjería</option><option value="Pasaporte">Pasaporte</option><option value="Otro">Otro</option></select></div>
+      <div class="col-sm-8 col-lg-3"><label class="form-label" for="numeroDocumento">N.º de documento</label><input id="numeroDocumento" class="form-control" formControlName="numeroDocumento" maxlength="20" placeholder="Ingrese DNI/doc"><div class="form-text">Al escribir el DNI se cargan sus datos.</div></div>
+      <div class="col-lg-3"><label class="form-label" for="nombres">Nombres <span class="required-mark">*</span></label><input id="nombres" class="form-control" formControlName="nombres" placeholder="Ej. María" [class.is-invalid]="tieneError('propietario','nombres')"></div>
+      <div class="col-lg-3"><label class="form-label" for="apellidos">Apellidos <span class="required-mark">*</span></label><input id="apellidos" class="form-control" formControlName="apellidos" placeholder="Ej. García" [class.is-invalid]="tieneError('propietario','apellidos')"></div>
+      <div class="col-md-6"><label class="form-label" for="telefono">Teléfono <span class="required-mark">*</span></label><input id="telefono" class="form-control" formControlName="telefono" placeholder="Ej. 987654321" [class.is-invalid]="tieneError('propietario','telefono')"></div>
+      <div class="col-md-6"><label class="form-label" for="correo">Correo electrónico</label><input id="correo" type="email" class="form-control" formControlName="correo" placeholder="correo@ejemplo.com"></div>
+    </div>
+  </section>
+
+  <section class="panel p-3 p-md-4 mb-4" formGroupName="mascota">
+    <div class="section-heading"><span class="section-number">2</span><div><h2 class="panel-title mb-1">Datos de la mascota</h2><p class="muted small mb-0">Ficha médica y características.</p></div></div>
+    <div class="row g-3 mt-1">
+      <div class="col-md-6 col-lg-4"><label class="form-label" for="nombreMascota">Nombre <span class="required-mark">*</span></label><input id="nombreMascota" class="form-control" formControlName="nombre" placeholder="Ej. Luna"></div>
+      <div class="col-md-6 col-lg-4"><label class="form-label" for="especie">Especie <span class="required-mark">*</span></label><select id="especie" class="form-select" formControlName="especie"><option value="Perro">Perro</option><option value="Gato">Gato</option><option value="Ave">Ave</option><option value="Conejo">Conejo</option><option value="Otro">Otro</option></select></div>
+      
+      @if (formulario.get('mascota.especie')?.value === 'Otro') {
+        <div class="col-md-6 col-lg-4"><label class="form-label" for="otraEspecie">Especifique Especie <span class="required-mark">*</span></label><input id="otraEspecie" class="form-control" formControlName="otraEspecie" placeholder="Ej. Hámster"></div>
+      }
+
+      <div class="col-md-6 col-lg-4"><label class="form-label" for="raza">Raza</label><input id="raza" class="form-control" formControlName="raza" placeholder="Ej. Mestizo"></div>
+      <div class="col-md-6 col-lg-4"><label class="form-label" for="peso">Peso (Kg) <span class="required-mark">*</span></label><input id="peso" type="number" step="0.1" class="form-control" formControlName="peso" placeholder="Ej. 8.5"><div class="form-text">Para cálculo de medicamentos.</div></div>
+      <div class="col-md-6 col-lg-4"><label class="form-label" for="fechaNacimiento">Fecha de nacimiento</label><input id="fechaNacimiento" type="date" class="form-control" formControlName="fechaNacimiento" [max]="hoy"></div>
+      <div class="col-md-6 col-lg-4"><label class="form-label" for="sexo">Sexo</label><select id="sexo" class="form-select" formControlName="sexo"><option value="No especificado">No especificado</option><option value="Macho">Macho</option><option value="Hembra">Hembra</option></select></div>
+      
+      @if (recetaSugerida) {
+        <div class="col-12"><div class="alert alert-info mb-0"><strong>💊 Sugerencia de medicamentos por peso:</strong> {{ recetaSugerida }}</div></div>
+      }
+
+      <div class="col-12"><label class="form-label" for="observaciones">Observaciones</label><textarea id="observaciones" class="form-control" rows="3" formControlName="observaciones" placeholder="Alergias o notas"></textarea></div>
+    </div>
+  </section>
+
+  <div class="d-flex flex-wrap justify-content-end gap-2"><button type="button" class="btn btn-outline-secondary px-4" (click)="limpiar()">Limpiar</button><button type="submit" class="btn btn-primary px-4">Guardar propietario y mascota</button></div>
+</form>

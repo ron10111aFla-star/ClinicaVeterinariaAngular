@@ -1,0 +1,4 @@
+.eyebrow { color: #197c70; font-size: .75rem; letter-spacing: .12em; font-weight: 800; }
+.step-pill { border-radius: 999px; background: #e5f4ef; color: #17675e; padding: .65rem .9rem; font-weight: 700; }
+.section-heading { display: flex; align-items: center; gap: .85rem; }
+.section-number { display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 38px; border-radius: 12px; background: #e5f4ef; color: #17675e; font-weight: 800; }
